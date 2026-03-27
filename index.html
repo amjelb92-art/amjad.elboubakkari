@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amjad El Boubakkari — Photographe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #e8d08a;
+      --black: #080808;
+      --ink: #0f0f0f;
+      --surface: #141414;
+      --white: #f2f0eb;
+      --muted: rgba(242,240,235,0.4);
+      --border: rgba(242,240,235,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    #cur { position: fixed; z-index: 9999; pointer-events: none; top:0; left:0; }
+    #cur-dot { width:5px; height:5px; background:var(--gold); border-radius:50%; position:absolute; transform:translate(-50%,-50%); }
+    #cur-ring { width:30px; height:30px; border:1px solid rgba(201,168,76,.5); border-radius:50%; position:absolute; transform:translate(-50%,-50%); transition:width .35s,height .35s,border-color .35s; }
+    body:has(a:hover) #cur-ring, body:has(button:hover) #cur-ring { width:48px; height:48px; border-color:rgba(201,168,76,.9); }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:2rem 4rem; }
+    nav::before { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,rgba(8,8,8,.9) 0%,transparent 100%); pointer-events:none; }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:1.1rem; letter-spacing:.06em; color:var(--white); text-decoration:none; position:relative; }
+    .nav-menu { display:flex; gap:3rem; list-style:none; position:relative; }
+    .nav-menu a { font-family:'Jost',sans-serif; font-weight:200; font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; color:var(--white); text-decoration:none; opacity:.5; transition:opacity .25s,color .25s; }
+    .nav-menu a:hover { opacity:1; color:var(--gold); }
+
+    /* HERO */
+    #hero { height:100vh; min-height:640px; display:grid; grid-template-columns:1fr 1fr; position:relative; overflow:hidden; }
+    .hero-left { display:flex; flex-direction:column; justify-content:flex-end; padding:0 4rem 6rem; position:relative; z-index:2; }
+    .hero-eyebrow { font-family:'Jost',sans-serif; font-weight:200; font-size:.62rem; letter-spacing:.35em; text-transform:uppercase; color:var(--gold); margin-bottom:2rem; opacity:0; animation:rise .9s .2s ease forwards; }
+    .hero-name { font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic; font-size:clamp(3rem,5vw,5.5rem); line-height:1.05; letter-spacing:.01em; opacity:0; animation:rise 1s .35s ease forwards; }
+    .hero-name em { font-style:normal; display:block; font-weight:400; }
+    .hero-rule { width:40px; height:1px; background:var(--gold); margin:2.5rem 0; opacity:0; animation:rise .8s .55s ease forwards; }
+    .hero-desc { font-size:.82rem; line-height:1.9; color:var(--muted); max-width:320px; opacity:0; animation:rise .9s .65s ease forwards; }
+    .hero-actions { display:flex; align-items:center; gap:2.5rem; margin-top:3rem; opacity:0; animation:rise .9s .8s ease forwards; }
+    .btn-gold { font-family:'Jost',sans-serif; font-weight:300; font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; color:var(--black); background:var(--gold); border:none; padding:.85rem 2.2rem; text-decoration:none; display:inline-block; cursor:none; transition:background .25s,transform .25s; }
+    .btn-gold:hover { background:var(--gold-light); transform:translateY(-2px); }
+    .btn-ghost { font-family:'Jost',sans-serif; font-weight:200; font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; color:var(--white); text-decoration:none; opacity:.45; display:flex; align-items:center; gap:.7rem; cursor:none; transition:opacity .25s,color .25s; }
+    .btn-ghost::after { content:'→'; }
+    .btn-ghost:hover { opacity:1; color:var(--gold); }
+    .hero-right { position:relative; overflow:hidden; opacity:0; animation:hero-img-in 1.4s .1s ease forwards; }
+    @keyframes hero-img-in { from{opacity:0;transform:scale(1.04)} to{opacity:1;transform:scale(1)} }
+    .hero-img-ph { width:100%; height:100%; background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; }
+    .hero-img-ph svg { opacity:.1; width:56px; }
+    .hero-img-ph span { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; opacity:.2; }
+    .hero-right::after { content:''; position:absolute; inset:0; background:linear-gradient(to right,var(--black) 0%,transparent 30%); }
+    .hero-scroll { position:absolute; bottom:3.5rem; left:4rem; z-index:3; display:flex; flex-direction:column; align-items:flex-start; gap:.7rem; opacity:0; animation:rise 1s 1.2s ease forwards; }
+    .hero-scroll-line { width:1px; height:60px; background:linear-gradient(to bottom,var(--gold),transparent); }
+    .hero-scroll-label { font-size:.58rem; letter-spacing:.3em; text-transform:uppercase; opacity:.3; writing-mode:vertical-rl; }
+    @keyframes rise { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* COMMON */
+    .s-label { font-family:'Jost',sans-serif; font-weight:200; font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; }
+    .s-title { font-family:'Cormorant Garamond',serif; font-weight:300; font-style:italic; font-size:clamp(2.2rem,4vw,4rem); line-height:1.1; letter-spacing:.01em; margin-bottom:1.5rem; }
+
+    /* ABOUT */
+    #about { padding:10rem 4rem; display:grid; grid-template-columns:5fr 7fr; gap:7rem; align-items:center; }
+    .about-img-wrap { position:relative; }
+    .about-img { aspect-ratio:3/4; background:var(--surface); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem; position:relative; overflow:hidden; }
+    .about-img svg { opacity:.1; width:48px; }
+    .about-img span { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; opacity:.2; }
+    .about-img-border { position:absolute; top:1.5rem; left:1.5rem; right:-1.5rem; bottom:-1.5rem; border:1px solid rgba(201,168,76,.2); pointer-events:none; }
+    .about-body { margin-top:2rem; font-size:.88rem; line-height:2; color:var(--muted); }
+    .about-body p+p { margin-top:1.2rem; }
+    .about-divider { width:32px; height:1px; background:var(--gold); margin:2.5rem 0; }
+    .about-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .about-link { font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--white); text-decoration:none; opacity:.4; display:flex; align-items:center; gap:.6rem; transition:opacity .2s,color .2s; cursor:none; }
+    .about-link svg { width:13px; flex-shrink:0; }
+    .about-link:hover { opacity:1; color:var(--gold); }
+
+    /* GALLERY */
+    #galerie { padding:8rem 4rem; background:var(--ink); }
+    .gallery-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:4rem; }
+    .gallery-filters { display:flex; gap:2rem; }
+    .f-btn { background:none; border:none; cursor:none; font-family:'Jost',sans-serif; font-weight:200; font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--white); opacity:.3; padding-bottom:.3rem; border-bottom:1px solid transparent; transition:opacity .2s,border-color .2s,color .2s; }
+    .f-btn.active,.f-btn:hover { opacity:1; color:var(--gold); border-color:var(--gold); }
+    .gallery-masonry { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .g-item { background:var(--surface); overflow:hidden; position:relative; cursor:none; transition:opacity .4s,transform .4s; }
+    .g-item:nth-child(2) { margin-top:60px; }
+    .g-item:nth-child(5) { margin-top:-60px; }
+    .g-item:nth-child(8) { margin-top:40px; }
+    .g-inner { aspect-ratio:2/3; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:.8rem; transition:transform .6s ease; }
+    .g-item:hover .g-inner { transform:scale(1.03); }
+    .g-inner svg { opacity:.1; width:36px; }
+    .g-inner span { font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; opacity:.2; }
+    .g-overlay { position:absolute; inset:0; background:rgba(8,8,8,.55); display:flex; align-items:flex-end; padding:1.5rem; opacity:0; transition:opacity .35s; }
+    .g-item:hover .g-overlay { opacity:1; }
+    .g-overlay-label { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem; color:var(--white); letter-spacing:.04em; }
+    .gallery-note { margin-top:2rem; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; opacity:.18; }
+
+    /* SERVICES */
+    #services { padding:10rem 4rem; }
+    .services-intro { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:end; margin-bottom:6rem; }
+    .services-intro p { font-size:.88rem; line-height:1.9; color:var(--muted); }
+    .services-list { display:flex; flex-direction:column; }
+    .svc { display:grid; grid-template-columns:60px 1fr auto; align-items:start; gap:2rem; padding:3rem 0; border-bottom:1px solid var(--border); }
+    .svc:first-child { border-top:1px solid var(--border); }
+    .svc-num { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:.9rem; color:var(--gold); opacity:.55; padding-top:.15rem; }
+    .svc-name { font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:300; letter-spacing:.02em; margin-bottom:.7rem; transition:color .25s; }
+    .svc:hover .svc-name { color:var(--gold); }
+    .svc-desc { font-size:.82rem; line-height:1.8; color:var(--muted); max-width:500px; }
+    .svc-arrow { font-size:1.1rem; color:var(--gold); opacity:0; transition:opacity .25s,transform .25s; padding-top:.3rem; }
+    .svc:hover .svc-arrow { opacity:1; transform:translateX(4px); }
+
+    /* CONTACT */
+    #contact { padding:10rem 4rem; background:var(--ink); }
+    .contact-grid { display:grid; grid-template-columns:5fr 7fr; gap:7rem; margin-top:5rem; }
+    .contact-aside p { font-size:.85rem; line-height:1.9; color:var(--muted); margin-bottom:3rem; }
+    .c-item { margin-bottom:2rem; }
+    .c-item-label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); margin-bottom:.4rem; opacity:.65; }
+    .c-item-value { font-size:.9rem; opacity:.7; }
+    .c-item-value a { color:inherit; text-decoration:none; transition:color .2s; }
+    .c-item-value a:hover { color:var(--gold); }
+    .c-rule { width:24px; height:1px; background:var(--border); margin:2.5rem 0; }
+    .contact-form { display:flex; flex-direction:column; gap:1.5rem; }
+    .f-group { display:flex; flex-direction:column; gap:.5rem; }
+    .f-group label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; opacity:.32; }
+    .f-group input,.f-group textarea,.f-group select { background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--white); padding:.9rem 0; font-family:'Jost',sans-serif; font-size:.88rem; font-weight:300; outline:none; width:100%; transition:border-color .25s; }
+    .f-group input::placeholder,.f-group textarea::placeholder { opacity:.22; }
+    .f-group input:focus,.f-group textarea:focus,.f-group select:focus { border-color:var(--gold); }
+    .f-group select option { background:var(--ink); }
+    .f-group textarea { min-height:100px; resize:none; }
+    .f-row { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+    .f-submit { background:none; border:1px solid rgba(201,168,76,.35); color:var(--gold); padding:1rem 2.5rem; font-family:'Jost',sans-serif; font-weight:300; font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; cursor:none; transition:background .25s,color .25s,transform .25s; align-self:flex-start; margin-top:.5rem; }
+    .f-submit:hover { background:var(--gold); color:var(--black); transform:translateY(-2px); }
+
+    /* FOOTER */
+    footer { padding:2.5rem 4rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--border); }
+    .f-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:1rem; letter-spacing:.05em; color:var(--white); text-decoration:none; opacity:.5; }
+    .f-copy { font-size:.62rem; letter-spacing:.12em; opacity:.18; text-transform:uppercase; }
+    .f-nav { display:flex; gap:2rem; }
+    .f-nav a { font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; color:var(--white); text-decoration:none; opacity:.28; transition:opacity .2s,color .2s; }
+    .f-nav a:hover { opacity:.8; color:var(--gold); }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .9s ease,transform .9s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    .reveal-d1 { transition-delay:.12s; }
+    .reveal-d2 { transition-delay:.24s; }
+
+    /* RESPONSIVE */
+    @media(max-width:960px){
+      nav { padding:1.5rem 2rem; }
+      .nav-menu { display:none; }
+      #hero { grid-template-columns:1fr; }
+      .hero-right { display:none; }
+      .hero-left { padding:0 2rem 5rem; }
+      #about { grid-template-columns:1fr; padding:6rem 2rem; gap:4rem; }
+      #galerie { padding:6rem 2rem; }
+      .gallery-head { flex-direction:column; align-items:flex-start; gap:2rem; }
+      .gallery-masonry { grid-template-columns:repeat(2,1fr); }
+      .g-item:nth-child(2),.g-item:nth-child(5),.g-item:nth-child(8) { margin-top:0; }
+      #services { padding:6rem 2rem; }
+      .services-intro { grid-template-columns:1fr; gap:2rem; }
+      .svc { grid-template-columns:40px 1fr; }
+      .svc-arrow { display:none; }
+      #contact { padding:6rem 2rem; }
+      .contact-grid { grid-template-columns:1fr; gap:4rem; }
+      footer { padding:2rem; flex-direction:column; text-align:center; }
+      .f-nav { justify-content:center; }
+      .f-row { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"><div id="cur-dot"></div><div id="cur-ring"></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Amjad El Boubakkari</a>
+  <ul class="nav-menu">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#galerie">Galerie</a></li>
+    <li><a href="#services">Prestations</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Photographe · Île-de-France</p>
+    <h1 class="hero-name">Amjad<br/><em>El Boubakkari</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-desc">Portrait, corporate & événementiel. Des images qui capturent l'essentiel, avec précision et sensibilité.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-gold">Demander un devis</a>
+      <a href="#galerie" class="btn-ghost">Voir la galerie</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-ph">
+      <svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <span>Photo hero ici</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span class="hero-scroll-label">Défiler</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-img-wrap reveal">
+    <div class="about-img">
+      <svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>Ta photo ici</span>
+    </div>
+    <div class="about-img-border"></div>
+  </div>
+  <div class="about-text reveal reveal-d1">
+    <p class="s-label">À propos</p>
+    <h2 class="s-title">L'œil derrière<br/>l'objectif</h2>
+    <div class="about-body">
+      <p>Passionné de photographie depuis l'adolescence, je me suis formé en BTS Audiovisuel pour transformer cette passion en expertise. Basé en Île-de-France, j'accompagne particuliers et entreprises dans la création d'images qui leur ressemblent.</p>
+      <p>Mon approche est avant tout humaine : je prends le temps d'écouter, de comprendre votre univers, avant de créer. Qu'il s'agisse d'un portrait intimiste, d'un shooting corporate percutant ou de la couverture d'un événement mémorable, chaque image est pensée avec soin.</p>
+    </div>
+    <div class="about-divider"></div>
+    <div class="about-links">
+      <a href="https://instagram.com/amjad.elb_" target="_blank" class="about-link">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        @amjad.elb_
+      </a>
+      <a href="https://wa.me/33612378253" target="_blank" class="about-link">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        06 12 37 82 53
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="galerie">
+  <div class="gallery-head reveal">
+    <div>
+      <p class="s-label">Portfolio</p>
+      <h2 class="s-title">Galerie</h2>
+    </div>
+    <div class="gallery-filters">
+      <button class="f-btn active" onclick="filterGallery('all',this)">Tout</button>
+      <button class="f-btn" onclick="filterGallery('portrait',this)">Portrait</button>
+      <button class="f-btn" onclick="filterGallery('corporate',this)">Corporate</button>
+      <button class="f-btn" onclick="filterGallery('event',this)">Événementiel</button>
+    </div>
+  </div>
+  <div class="gallery-masonry reveal reveal-d1" id="galleryGrid">
+    <div class="g-item" data-cat="portrait"><div class="g-inner" style="background:linear-gradient(160deg,#181410,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Portrait</span></div><div class="g-overlay"><span class="g-overlay-label">Portrait</span></div></div>
+    <div class="g-item" data-cat="corporate"><div class="g-inner" style="background:linear-gradient(160deg,#101510,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="1"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><span>Corporate</span></div><div class="g-overlay"><span class="g-overlay-label">Corporate</span></div></div>
+    <div class="g-item" data-cat="event"><div class="g-inner" style="background:linear-gradient(160deg,#140f08,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Événement</span></div><div class="g-overlay"><span class="g-overlay-label">Événementiel</span></div></div>
+    <div class="g-item" data-cat="portrait"><div class="g-inner" style="background:linear-gradient(160deg,#181210,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Portrait</span></div><div class="g-overlay"><span class="g-overlay-label">Portrait</span></div></div>
+    <div class="g-item" data-cat="corporate"><div class="g-inner" style="background:linear-gradient(160deg,#0f1208,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span>Corporate</span></div><div class="g-overlay"><span class="g-overlay-label">Corporate</span></div></div>
+    <div class="g-item" data-cat="event"><div class="g-inner" style="background:linear-gradient(160deg,#130e08,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Événement</span></div><div class="g-overlay"><span class="g-overlay-label">Événementiel</span></div></div>
+    <div class="g-item" data-cat="portrait"><div class="g-inner" style="background:linear-gradient(160deg,#181510,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Portrait</span></div><div class="g-overlay"><span class="g-overlay-label">Portrait</span></div></div>
+    <div class="g-item" data-cat="event"><div class="g-inner" style="background:linear-gradient(160deg,#150e08,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Événement</span></div><div class="g-overlay"><span class="g-overlay-label">Événementiel</span></div></div>
+    <div class="g-item" data-cat="corporate"><div class="g-inner" style="background:linear-gradient(160deg,#0f1210,#0f0f0f)"><svg fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 3H8l-2 4h12l-2-4z"/></svg><span>Corporate</span></div><div class="g-overlay"><span class="g-overlay-label">Corporate</span></div></div>
+  </div>
+  <p class="gallery-note reveal">* Remplace les placeholders par tes photos une fois déployé.</p>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-intro">
+    <div class="reveal">
+      <p class="s-label">Prestations</p>
+      <h2 class="s-title">Ce que<br/>je propose</h2>
+    </div>
+    <p class="reveal reveal-d1">Chaque projet est unique. Je m'adapte à vos besoins pour livrer des images à la hauteur de vos ambitions, qu'il s'agisse d'un shooting intime ou d'une grande couverture événementielle.</p>
+  </div>
+  <div class="services-list reveal">
+    <div class="svc">
+      <span class="svc-num">I</span>
+      <div class="svc-body">
+        <div class="svc-name">Portrait & Lifestyle</div>
+        <p class="svc-desc">Portraits individuels ou en groupe, shooting lifestyle, photos de profil professionnelles ou personnelles. Je capture votre personnalité avec naturel et élégance.</p>
+      </div>
+      <span class="svc-arrow">→</span>
+    </div>
+    <div class="svc">
+      <span class="svc-num">II</span>
+      <div class="svc-body">
+        <div class="svc-name">Photo Corporate</div>
+        <p class="svc-desc">Photos d'équipe, reportages d'entreprise, headshots professionnels. Des visuels soignés qui valorisent votre image de marque et inspirent confiance.</p>
+      </div>
+      <span class="svc-arrow">→</span>
+    </div>
+    <div class="svc">
+      <span class="svc-num">III</span>
+      <div class="svc-body">
+        <div class="svc-name">Couverture Événementielle</div>
+        <p class="svc-desc">Concerts, soirées, séminaires, inaugurations. Je documente l'énergie et les moments forts de vos événements avec précision et discrétion.</p>
+      </div>
+      <span class="svc-arrow">→</span>
+    </div>
+  </div>
+  <div style="margin-top:4rem" class="reveal">
+    <a href="#contact" class="btn-gold">Demander un devis</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="s-label">Contact</p>
+    <h2 class="s-title">Parlons de<br/>votre projet</h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-aside reveal">
+      <p>Vous avez un projet en tête ? N'hésitez pas à me contacter. Je réponds à toutes les demandes sous 24h et établis un devis personnalisé selon vos besoins.</p>
+      <div class="c-item">
+        <div class="c-item-label">WhatsApp & Téléphone</div>
+        <div class="c-item-value"><a href="tel:+33612378253">06 12 37 82 53</a></div>
+      </div>
+      <div class="c-rule"></div>
+      <div class="c-item">
+        <div class="c-item-label">Instagram</div>
+        <div class="c-item-value"><a href="https://instagram.com/amjad.elb_" target="_blank">@amjad.elb_</a></div>
+      </div>
+      <div class="c-rule"></div>
+      <div class="c-item">
+        <div class="c-item-label">Zone d'intervention</div>
+        <div class="c-item-value">Île-de-France</div>
+      </div>
+    </div>
+    <form class="contact-form reveal reveal-d1" onsubmit="handleSubmit(event)">
+      <div class="f-row">
+        <div class="f-group"><label>Prénom</label><input type="text" placeholder="Jean" required /></div>
+        <div class="f-group"><label>Nom</label><input type="text" placeholder="Dupont" required /></div>
+      </div>
+      <div class="f-group"><label>Email</label><input type="email" placeholder="jean@exemple.fr" required /></div>
+      <div class="f-group">
+        <label>Prestation souhaitée</label>
+        <select required>
+          <option value="" disabled selected>Choisir...</option>
+          <option>Portrait & Lifestyle</option>
+          <option>Photo Corporate</option>
+          <option>Couverture Événementielle</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="f-group"><label>Message</label><textarea placeholder="Décrivez votre projet, la date souhaitée, le lieu..." required></textarea></div>
+      <button type="submit" class="f-submit">Envoyer la demande</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#hero" class="f-logo">Amjad El Boubakkari</a>
+  <span class="f-copy">© 2025 · Photographe · Île-de-France</span>
+  <nav class="f-nav">
+    <a href="#about">À propos</a>
+    <a href="#galerie">Galerie</a>
+    <a href="#services">Prestations</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</footer>
+
+<script>
+  // Cursor
+  const dot=document.getElementById('cur-dot'),ring=document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function anim(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+  // Reveal
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});},{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // Filter
+  function filterGallery(cat,btn){
+    document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.g-item').forEach(item=>{
+      const show=cat==='all'||item.dataset.cat===cat;
+      item.style.opacity=show?'1':'0.08';
+      item.style.transform=show?'':'scale(0.97)';
+      item.style.transition='opacity .4s,transform .4s';
+    });
+  }
+
+  // Form
+  function handleSubmit(e){
+    e.preventDefault();
+    const btn=e.target.querySelector('.f-submit');
+    btn.textContent='Message envoyé ✓';
+    btn.style.background='var(--gold)';btn.style.color='var(--black)';
+    setTimeout(()=>{btn.textContent='Envoyer la demande';btn.style.background='';btn.style.color='';},3500);
+  }
+</script>
+</body>
+</html>
